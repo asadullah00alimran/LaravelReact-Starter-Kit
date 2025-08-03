@@ -15,9 +15,8 @@ class RoleController extends Controller
      */
     public function index()
     {
-        $roles = Role::with('permissions')->get();
-        return Inertia::render('Roles/Index', [
-            "roles" => $roles
+        return Inertia::render("Roles/Index", [
+            "roles" => Role::with("permissions")->get(),
         ]);
     }
 
@@ -27,7 +26,6 @@ class RoleController extends Controller
     public function create()
     {
         $permissions = Permission::pluck("name");
-        // dd($permissions);
         return Inertia::render('Roles/Create', [
             "permissions" => $permissions
         ]);
@@ -44,10 +42,10 @@ class RoleController extends Controller
             "permissions" => "required",
         ]);
 
-        $role = Role::create(['name' => $request->name]);
+        $role = Role::create(["name" => $request->name]);
         $role->syncPermissions($request->permissions);
 
-        return to_route('roles.index');
+        return to_route("roles.index");
     }
 
     /**
@@ -57,7 +55,8 @@ class RoleController extends Controller
     {
         $role = Role::find($id);
         return Inertia::render('Roles/Show', [
-            "role" => $role
+            "role" => $role,
+            "permissions" => $role->permissions()->pluck("name"),
         ]);
     }
 
@@ -66,9 +65,14 @@ class RoleController extends Controller
      */
     public function edit(string $id)
     {
-        $role = Role::find($id);
+        $role = Role::findOrFail($id);
+        $permissions = Permission::pluck("name");
+        $rolePermission = $role->permissions()->pluck("name");
+
         return Inertia::render('Roles/Edit', [
-            "role" => $role
+            "role" => $role,
+            "permissions" => $permissions,
+            "rolePermission" => $rolePermission,
         ]);
     }
 
@@ -79,11 +83,13 @@ class RoleController extends Controller
     {
         $request->validate([
             "name" => "required",
+            "permissions" => "required",
         ]);
 
         $role = Role::findOrFail($id);
-        $role->name = $request->name;        
-        $role->save();
+        $role->name = $request->name;
+        $role->update();
+        $role->syncPermissions($request->permissions);
 
         return to_route('roles.index');
     }

@@ -70,12 +70,17 @@ export default function Index({ roles }) {
                                         <td className="px-6 py-4">
                                             {name}
                                         </td>
-                                        <td className="px-6 py-4">
+                                        <td className="px-6 py-4 space-x-1">
                                             {
+                                                permissions.map(
+                                                    (permission) => <span className='bg-green-200 text-black rounded-4xl px-2 '>{permission.name}</span>
+                                                )
+                                            }
+                                            {/* {
                                                 permissions.map((permission)=>{
                                                     <span className='bg-green-500 text-white rounded-4xl px-2 '>{permission.name}</span>
                                                 })
-                                            }                                            
+                                            }                                             */}
                                         </td>
                                         <td className="flex  items-center px-6 py-4 space-x-2">
                                             <Link 

@@ -18,12 +18,13 @@ export default function Create({ permissions }) {
     });
 
     function handleCheckboxChange(permissionName, checked){
-        if (checked) {
-            setData("permissions", [...data.permissions, permissionName])
+        if(checked){
+            setData("permissions", [...data.permissions, permissionName]);
         }else{
             setData("permissions", data.permissions.filter(name => name !== permissionName));
         }
     }
+
 
     function submit(e) {
         e.preventDefault();
@@ -68,16 +69,16 @@ export default function Create({ permissions }) {
                                         <div key={permission} className="flex items-center py-2">
                                             <input
                                                 type="checkbox"
-                                                // name='permissions'
-                                                onChange={(e)=>handleCheckboxChange(permission, e.target.checked)}
                                                 value={permission}
+                                                onChange={(e) => handleCheckboxChange(permission, e.target.checked)}
                                                 id={permission}
                                                 className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm"
                                             />
                                             <label className="ml-3" htmlFor={permission}>{permission}</label>
                                         </div>
                                     ))}
-                                </div>
+                                </div>                                
+                                {errors.permissions && <p className='text-red-500'>{errors.permissions}</p>}
                             </div>
                         </div>
 

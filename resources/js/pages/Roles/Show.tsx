@@ -10,37 +10,30 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function Show({role}) {
+export default function Show({ role, permissions }) {
 
-    // const {data, setData, errors, post} = useForm({
-    //     name : "",
-    //     email : "",
-    //     password : "",
-    //     password_confirmation : "",
-    // });
-
-    // function submit(e){
-    //     e.preventDefault();
-    //     post(route('roles.store'));
-    // }
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="roles" />
+            <Head title="Roles" />
             <div className='px-20 mt-10 sm:px-5'>
 
                 <Link
                     href={route('roles.index')}
                     className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cursor-pointer">
-                    Roles List
+                    Role List
                 </Link>
 
                 <div className='mt-10'>
-
-                    <p>{role.name}</p>
-                    <p>{role.email}</p>
-
+                    <p><strong>Role: </strong>{role.name}</p>
+                    <p><strong>Permissions: </strong></p>
+                    <div className='flex space-x-2'>
+                        {
+                        permissions.map(
+                            (permission) => <span className='bg-green-200 text-black rounded-4xl px-2 '>{permission}</span>
+                        )
+                    }
+                    </div>
                 </div>
-
             </div>
         </AppLayout>
     );
