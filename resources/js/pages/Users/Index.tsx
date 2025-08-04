@@ -51,12 +51,15 @@ export default function Index({ users }) {
                                         Email
                                     </th>
                                     <th scope="col" className="px-6 py-3">
+                                        Roles
+                                    </th>
+                                    <th scope="col" className="px-6 py-3">
                                         Action
                                     </th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {users.map(({ id, name, email }) => (
+                                {users.map(({ id, name, email, roles }) => (
                                     <tr key={id} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600">
                                         <td className="w-4 p-4">
                                             <div className="flex items-center">
@@ -72,6 +75,13 @@ export default function Index({ users }) {
                                         </td>
                                         <td className="px-6 py-4">
                                             {email}
+                                        </td>                                        
+                                        <td className="px-6 py-4 space-x-1">
+                                            {
+                                                roles.map(
+                                                    (role) => <span className='bg-green-200 text-black rounded-4xl px-2 '>{role.name}</span>
+                                                )
+                                            }
                                         </td>
                                         <td className="flex  items-center px-6 py-4 space-x-2">
                                             <Link 
