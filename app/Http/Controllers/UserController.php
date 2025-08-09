@@ -72,9 +72,12 @@ class UserController extends Controller
     public function edit(string $id)
     {
         $user = User::find($id);
-        $userRoles = $user->roles()->pluck('name');
+        $userRoles = $user->roles()->pluck("name");
+        // dd($userRole);
+        $roles = Role::pluck("name");
         return Inertia::render('Users/Edit', [
             "user" => $user,
+            "roles" => $roles,
             "userRoles" => $userRoles,
         ]);
     }
@@ -86,7 +89,7 @@ class UserController extends Controller
     {
         $request->validate([
             "name" => "required",
-            "email" => "required|unique:users,email",
+            "email" => "required",
             "password" => "nullable",
         ]);
 
@@ -99,7 +102,7 @@ class UserController extends Controller
             $user->password = Hash::make($request->password);
         }        
         $user->save();
-
+        $user->syncRoles($request->roles);
         return to_route('users.index');
     }
 

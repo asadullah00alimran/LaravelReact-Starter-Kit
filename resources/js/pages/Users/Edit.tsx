@@ -10,19 +10,29 @@ const breadcrumbs: BreadcrumbItem[] = [
     },
 ];
 
-export default function Edit({user}) {
+export default function Edit({user, roles, userRoles}) {
 
     const { data, setData, errors, put} = useForm({
         name: user.name || "",
         email: user.email || "",
         password: "",
         password_confirmation: "",
+        roles: userRoles || [],
     });
+
+    function handleCheckboxChange(roleName, checked){
+        if(checked){
+            setData("roles", [...data.roles, roleName]);
+        }else{
+            setData("roles", data.roles.filter(name => name !== roleName));
+        }
+    }
 
     function submit(e) {
         e.preventDefault();
         put(route('users.update', user.id));
     }
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Users" />
@@ -98,6 +108,30 @@ export default function Edit({user}) {
                                 />
                                 {errors.password_confirmation && <p className='text-red-500'>{errors.password_confirmation}</p>}
                             </div>
+
+                           
+                            <div>
+                                <label htmlFor={roles} className="mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                                    Roles
+                                </label>
+                                <div className=''>
+                                    {roles.map(role => (
+                                        <div key={role} className="flex items-center py-2">
+                                            <input
+                                                type="checkbox"
+                                                value={role}
+                                                checked={data.roles.includes(role)}
+                                                onChange={(e) => handleCheckboxChange(role, e.target.checked)}
+                                                id={role}
+                                                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-sm"
+                                            />
+                                            <label className="ml-3" htmlFor={role}>{role}</label>
+                                        </div>
+                                    ))}
+                                </div>                                
+                                {errors.roles && <p className='text-red-500'>{errors.roles}</p>}
+                            </div>
+
                         </div>
                         <button type="submit" className="text-white bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit</button>
                     </form>
