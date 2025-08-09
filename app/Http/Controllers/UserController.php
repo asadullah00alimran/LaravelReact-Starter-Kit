@@ -7,9 +7,27 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Inertia\Inertia;
 use Spatie\Permission\Models\Role;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class UserController extends Controller
+class UserController extends Controller implements HasMiddleware
 {
+        public static function middleware(): array
+    {
+        return [
+            // Role View permission
+            new Middleware('permission:users.view', only: ['index', 'show']),
+
+            // Role Create permission
+            new Middleware('permission:users.create', only: ['create', 'store']),
+
+            // Role Edit permission
+            new Middleware('permission:users.edit', only: ['edit', 'update']),
+
+            // Role Delete permission
+            new Middleware('permission:users.delete', only: ['destroy']),
+        ];
+    }
     /**
      * Display a listing of the resource.
      */

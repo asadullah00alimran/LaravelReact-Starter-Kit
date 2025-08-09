@@ -6,13 +6,28 @@ use Inertia\Inertia;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class RoleController extends Controller
+class RoleController extends Controller implements HasMiddleware
 {
-    /**
-     * Display a listing of the resource.
-     */
+    public static function middleware(): array
+    {
+        return [
+            // Role View permission
+            new Middleware('permission:roles.view', only: ['index', 'show']),
+
+            // Role Create permission
+            new Middleware('permission:roles.create', only: ['create', 'store']),
+
+            // Role Edit permission
+            new Middleware('permission:roles.edit', only: ['edit', 'update']),
+
+            // Role Delete permission
+            new Middleware('permission:roles.delete', only: ['destroy']),
+        ];
+    }
+
     public function index()
     {
         return Inertia::render("Roles/Index", [
@@ -20,9 +35,6 @@ class RoleController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         $permissions = Permission::pluck("name");
@@ -31,12 +43,8 @@ class RoleController extends Controller
         ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        // dd($request->all());
         $request->validate([
             "name" => "required",
             "permissions" => "required",
@@ -48,9 +56,6 @@ class RoleController extends Controller
         return to_route("roles.index");
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         $role = Role::find($id);
@@ -60,9 +65,6 @@ class RoleController extends Controller
         ]);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
         $role = Role::findOrFail($id);
@@ -76,9 +78,6 @@ class RoleController extends Controller
         ]);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
         $request->validate([
@@ -94,9 +93,6 @@ class RoleController extends Controller
         return to_route('roles.index');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
         Role::destroy($id);
